@@ -1,0 +1,10 @@
+D:\project\ReadIndexFileToCSV\ReadIndexFileToCSV\bin\Debug\ReadIndexFileToCSV.exe.config
+D:\project\ReadIndexFileToCSV\ReadIndexFileToCSV\bin\Debug\ReadIndexFileToCSV.exe
+D:\project\ReadIndexFileToCSV\ReadIndexFileToCSV\bin\Debug\ReadIndexFileToCSV.pdb
+D:\project\ReadIndexFileToCSV\ReadIndexFileToCSV\bin\Debug\System.Configuration.ConfigurationManager.dll
+D:\project\ReadIndexFileToCSV\ReadIndexFileToCSV\bin\Debug\System.Configuration.ConfigurationManager.xml
+D:\project\ReadIndexFileToCSV\ReadIndexFileToCSV\obj\Debug\ReadIndexFileToCSV.csproj.AssemblyReference.cache
+D:\project\ReadIndexFileToCSV\ReadIndexFileToCSV\obj\Debug\ReadIndexFileToCSV.csproj.CoreCompileInputs.cache
+D:\project\ReadIndexFileToCSV\ReadIndexFileToCSV\obj\Debug\ReadIndexFileToCSV.csproj.CopyComplete
+D:\project\ReadIndexFileToCSV\ReadIndexFileToCSV\obj\Debug\ReadIndexFileToCSV.exe
+D:\project\ReadIndexFileToCSV\ReadIndexFileToCSV\obj\Debug\ReadIndexFileToCSV.pdb
