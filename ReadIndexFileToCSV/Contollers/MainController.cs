@@ -6,14 +6,31 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ReadIndexFileToCSV.Contollers
 {
     public class MainController
     {
+        private Timer _timer = null;
+        
         public void run()
         {
+
+            int interval = int.Parse(ConfigurationManager.AppSettings["interval"]);
+
+            
+
+            _timer = new Timer(TimerCallBack, null, 0, interval);
+
+            Console.ReadLine();
+        }
+
+
+        private async void TimerCallBack(Object e)
+        {
+            Console.WriteLine("run program");
             try
             {
                 PMACController pMACController = new PMACController();
@@ -43,7 +60,7 @@ namespace ReadIndexFileToCSV.Contollers
 
                 foreach(DataSaveFileTextModel item in listDataGlobal)
                 {
-                    if(item.loggerid != "")
+                    if(item.loggerid != "" && item.loggerid != "1468")
                     {
                         WriteSaveFileAction writeSaveFileAction = new WriteSaveFileAction(item.loggerid);
 
@@ -136,6 +153,66 @@ namespace ReadIndexFileToCSV.Contollers
 
                                 writeSaveFileAction.WriteSaveFile(data);
                             }
+                        }
+                    }
+                    else
+                    {
+                        GetDataIndexLoggerAPIAction getDataIndexLoggerAPIAction = new GetDataIndexLoggerAPIAction();
+                        WriteSaveFileAction writeSaveFileAction = new WriteSaveFileAction(item.loggerid);
+
+                        if (writeSaveFileAction.CheckFileCSVExists() == false)
+                        {
+                            writeSaveFileAction.CreateFileCSV();
+                        }
+                        if (writeSaveFileAction.CheckExistsFile() == false)
+                        {
+                            writeSaveFileAction.CreateFile();
+                        }
+
+                        DateTime timestampIndex;
+
+                        string channelFlow = $"{item.loggerid}_2";
+
+                        if (item.timestampIndex == "" || item.timestampIndex == "0")
+                        {
+                            DataSaveFileTextModel temp = loadTextFileAction.LoadTextFile(item.loggerid);
+
+
+                            if (item.timestampIndex != "")
+                            {
+                                timestampIndex = new DateTime(1970, 01, 01).AddSeconds(int.Parse(item.timestampIndex));
+                            }
+                            else
+                            {
+                                if (temp.timestampIndex != null)
+                                {
+                                    timestampIndex = new DateTime(1970, 01, 01).AddSeconds(int.Parse(temp.timestampIndex));
+                                    item.timestampIndex = temp.timestampIndex;
+                                }
+                                else
+                                {
+                                    timestampIndex = new DateTime(1970, 01, 01);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            timestampIndex = new DateTime(1970, 01, 01).AddSeconds(int.Parse(item.timestampIndex));
+                        }
+
+                        List<DataLoggerModel> list = await getDataIndexLoggerAPIAction.GetDataIndexLoggerAPI(channelFlow, timestampIndex.AddHours(7).AddSeconds(1), DateTime.Now.AddHours(8));
+
+                        if(list.Count > 0)
+                        {
+                            writeSaveFileAction.WriteCSVFile(list);
+
+                            DataSaveFileTextModel data = new DataSaveFileTextModel();
+                            data.timestamp = "0";
+                            data.loggerid = item.loggerid;
+                            data.index = list[list.Count - 1] != null ? list[list.Count - 1].Value.Value.ToString() : "";
+                            data.timestampIndex = list[list.Count - 1].TimeStamp != null ? list[list.Count - 1].TimeStamp.Value.Subtract(new DateTime(1970, 01, 01, 0, 0, 0)).TotalSeconds.ToString() : "0";
+
+                            writeSaveFileAction.WriteSaveFile(data);
                         }
                     }
                 }

@@ -3,6 +3,7 @@ using ReadIndexFileToCSV.Contollers;
 using ReadIndexFileToCSV.Models;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.ExceptionServices;
@@ -20,24 +21,23 @@ namespace ReadIndexFileToCSV
         [DllImport("user32.dll")]
         static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
-
-        const int SW_HIDE = 0;
-        const int SW_SHOW = 5;
         static void Main(string[] args)
         {
             // Usage:
             var handle = GetConsoleWindow();
 
+            int console = int.Parse(ConfigurationManager.AppSettings["console"]);
+
             // Hide
-            ShowWindow(handle, SW_HIDE);
+            ShowWindow(handle, console);
 
             string macAdress = "40F2E9DA8012";
 
-             String firstMacAddress = NetworkInterface
-                .GetAllNetworkInterfaces()
-                .Where(nic => nic.OperationalStatus == OperationalStatus.Up && nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
-                .Select(nic => nic.GetPhysicalAddress().ToString())
-                .FirstOrDefault();
+            String firstMacAddress = NetworkInterface
+               .GetAllNetworkInterfaces()
+               .Where(nic => nic.OperationalStatus == OperationalStatus.Up && nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
+               .Select(nic => nic.GetPhysicalAddress().ToString())
+               .FirstOrDefault();
 
             if (macAdress == firstMacAddress)
             {
